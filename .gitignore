@@ -1,0 +1,82 @@
+# Built results
+build/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Xcode
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/xcuserdata/
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+*.xcworkspace
+!default.xcworkspace
+
+# Precompiled headers
+*.pch
+*.gch
+
+# Compiled objects
+*.o
+*.obj
+
+# Linker output
+*.out
+*.app
+
+# Dynamic libraries
+*.dylib
+*.so
+
+# Static libraries
+*.a
+*.lib
+
+# Core Dumps
+core
+*.core
+
+# Debug information
+*.dSYM
+
+# Qt (если используется)
+moc_*
+qrc_*
+ui_*
+
+# CMake (если используется)
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Дополнительно
+.sconsign.dblite
+*.autosave
+
+# Резервные копии
+*.bak
+*.backup
+
+# Локальные настройки
+*.local.swift
+local.properties
+
+# Профилировщик
+*.gcno
+*.gcda
+*.gcov
+
+# Пакеты
+*.pkg
+
+# Файлы документации
+doc/*.html
+doc/*.css
+
+# Файлы операционной системы macOS
+.DS_Store

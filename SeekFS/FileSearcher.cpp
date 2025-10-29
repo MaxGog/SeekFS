@@ -9,8 +9,8 @@
 #include <algorithm>
 #include <iterator>
 
-FileSearcher::FileSearcher(const std::string& root_path, int num_threads)
-    : root_path_(root_path), num_threads_(std::max(1, num_threads)) {
+FileSearcher::FileSearcher(const std::string& root_path, int num_threads, bool show_progress)
+    : root_path_(root_path), num_threads_(std::max(1, num_threads)), show_progress_(show_progress) {
     
     if (!fs::exists(root_path_)) {
         throw std::runtime_error("Path does not exist: " + root_path);
@@ -20,7 +20,12 @@ FileSearcher::FileSearcher(const std::string& root_path, int num_threads)
 std::vector<fs::path> FileSearcher::collectAllFiles() {
     std::vector<fs::path> files;
     
+    if (show_progress_) {
+        GraphicsUtils::printSection("Scanning directory structure...");
+    }
+    
     try {
+        size_t count = 0;
         for (const auto& entry : fs::recursive_directory_iterator(
             root_path_,
             fs::directory_options::skip_permission_denied
@@ -29,7 +34,16 @@ std::vector<fs::path> FileSearcher::collectAllFiles() {
                 entry.file_size() <= max_file_size_ &&
                 matchesFileType(entry.path())) {
                 files.push_back(entry.path());
+                count++;
+                
+                if (show_progress_ && count % 100 == 0) {
+                    std::cout << "\rFound " << count << " files..." << std::flush;
+                }
             }
+        }
+        
+        if (show_progress_) {
+            std::cout << "\rFound " << files.size() << " files total." << std::endl;
         }
     } catch (const fs::filesystem_error& e) {
         std::cerr << "Filesystem error: " << e.what() << std::endl;
@@ -147,19 +161,51 @@ std::vector<std::string> FileSearcher::searchByContent(const std::string& patter
 }
 
 std::unordered_map<std::string, std::vector<std::string>> FileSearcher::findDuplicates() {
+    auto start_time = std::chrono::steady_clock::now();
+    
+    GraphicsUtils::printHeader("DUPLICATE SEARCH");
+    
+    if (show_progress_) {
+        GraphicsUtils::printSection("Phase 1: Collecting files");
+    }
+    
     auto files = collectAllFiles();
     
+    if (show_progress_) {
+        GraphicsUtils::printSection("Phase 2: Grouping by size");
+    }
+    
     std::unordered_map<std::string, std::vector<fs::path>> sizeGroups;
+    ProgressVisualizer size_progress("Size grouping", files.size());
+    
     for (const auto& file : files) {
         try {
             auto sizeHash = HashCalculator::calculateFileSizeHash(file);
             sizeGroups[sizeHash].push_back(file);
+            
+            if (show_progress_) {
+                size_progress.increment();
+            }
         } catch (const std::exception& e) {
             // Пропуск файлов с ошибками
         }
     }
     
+    if (show_progress_) {
+        size_progress.complete();
+        GraphicsUtils::printSection("Phase 3: Calculating MD5 hashes");
+    }
+    
     std::unordered_map<std::string, std::vector<std::string>> duplicates;
+    
+    size_t total_candidates = 0;
+    for (const auto& [sizeHash, fileGroup] : sizeGroups) {
+        if (fileGroup.size() > 1) {
+            total_candidates += fileGroup.size();
+        }
+    }
+    
+    ProgressVisualizer md5_progress("MD5 calculation", total_candidates);
     
     for (const auto& [sizeHash, fileGroup] : sizeGroups) {
         if (fileGroup.size() > 1) {
@@ -169,8 +215,14 @@ std::unordered_map<std::string, std::vector<std::string>> FileSearcher::findDupl
                 try {
                     auto md5 = HashCalculator::calculateMD5(file);
                     md5Groups[md5].push_back(file.string());
+                    
+                    if (show_progress_) {
+                        md5_progress.increment();
+                    }
                 } catch (const std::exception& e) {
-                    // Пропуск файлов с ошибками чтения
+                    if (show_progress_) {
+                        md5_progress.increment();
+                    }
                 }
             }
             
@@ -180,6 +232,15 @@ std::unordered_map<std::string, std::vector<std::string>> FileSearcher::findDupl
                 }
             }
         }
+    }
+    
+    if (show_progress_) {
+        md5_progress.complete();
+        
+        auto end_time = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count() / 1000.0;
+        
+        GraphicsUtils::printStats(files.size(), duplicates.size(), elapsed);
     }
     
     return duplicates;

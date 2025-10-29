@@ -14,12 +14,15 @@
 #include <atomic>
 #include <iostream>
 #include "HashCalculator.h"
+#include "ProgressVisualizer.h"
+#include "GraphicsUtils.h"
+#include "Spinner.h"
 
 namespace fs = std::filesystem;
 
 class FileSearcher {
 public:
-    FileSearcher(const std::string& root_path, int num_threads = 4);
+    FileSearcher(const std::string& root_path, int num_threads = 4, bool show_progress = false);
     
     std::vector<std::string> searchByName(const std::string& pattern);
     std::vector<std::string> searchByContent(const std::string& pattern);
@@ -33,9 +36,10 @@ private:
     fs::path root_path_;
     int num_threads_;
     bool case_sensitive_ = true;
+    bool show_progress_ = false;
     size_t max_file_size_ = 100 * 1024 * 1024;
     std::vector<std::string> file_types_;
-
+    
     std::vector<fs::path> collectAllFiles();
     bool matchesFileType(const fs::path& file);
     std::vector<std::string> processBatch(

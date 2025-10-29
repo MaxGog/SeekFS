@@ -161,5 +161,26 @@ std::unordered_map<std::string, std::vector<std::string>> FileSearcher::findDupl
     
     std::unordered_map<std::string, std::vector<std::string>> duplicates;
     
+    for (const auto& [sizeHash, fileGroup] : sizeGroups) {
+        if (fileGroup.size() > 1) {
+            std::unordered_map<std::string, std::vector<std::string>> md5Groups;
+            
+            for (const auto& file : fileGroup) {
+                try {
+                    auto md5 = HashCalculator::calculateMD5(file);
+                    md5Groups[md5].push_back(file.string());
+                } catch (const std::exception& e) {
+                    // Пропуск файлов с ошибками чтения
+                }
+            }
+            
+            for (const auto& [md5, filePaths] : md5Groups) {
+                if (filePaths.size() > 1) {
+                    duplicates[md5] = filePaths;
+                }
+            }
+        }
+    }
+    
     return duplicates;
 }

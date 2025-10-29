@@ -80,3 +80,7 @@ doc/*.css
 
 # Файлы операционной системы macOS
 .DS_Store
+
+# Зависимости
+cxxopts/
+vendor/openssl/

@@ -14,6 +14,7 @@
 #include "FileSearcher.h"
 
 namespace fs = std::filesystem;
+using namespace std;
 
 int main(int argc, char** argv) {
     cxxopts::Options options("FileSearch", "Advanced file search utility - Modern C++17/20");
@@ -34,15 +35,15 @@ int main(int argc, char** argv) {
         auto result = options.parse(argc, argv);
 
         if (result.count("help")) {
-            std::cout << options.help() << std::endl;
-            std::cout << "\nExamples:" << std::endl;
-            std::cout << "  Search for .txt files: " << argv[0] << " -n \".*\\.txt$\"" << std::endl;
-            std::cout << "  Case insensitive content search: " << argv[0] << " -c \"TODO\" -i" << std::endl;
-            std::cout << "  Find duplicates with 8 threads: " << argv[0] << " -d -t 8" << std::endl;
+            cout << options.help() << endl;
+            cout << "\nExamples:" << endl;
+            cout << "  Search for .txt files: " << argv[0] << " -n \".*\\.txt$\"" << endl;
+            cout << "  Case insensitive content search: " << argv[0] << " -c \"TODO\" -i" << endl;
+            cout << "  Find duplicates with 8 threads: " << argv[0] << " -d -t 8" << endl;
             return 0;
         }
 
-        std::string search_path = result["path"].as<std::string>();
+        string search_path = result["path"].as<string>();
         int num_threads = result["threads"].as<int>();
         size_t max_size_mb = result["max-size"].as<size_t>();
         
@@ -51,10 +52,10 @@ int main(int argc, char** argv) {
         searcher.setMaxFileSize(max_size_mb * 1024 * 1024);
         
         if (result.count("type")) {
-            std::string types_str = result["type"].as<std::string>();
-            std::vector<std::string> types;
+            string types_str = result["type"].as<string>();
+            vector<std::string> types;
             size_t start = 0, end = 0;
-            while ((end = types_str.find(',', start)) != std::string::npos) {
+            while ((end = types_str.find(',', start)) != string::npos) {
                 types.push_back(types_str.substr(start, end - start));
                 start = end + 1;
             }
@@ -66,54 +67,54 @@ int main(int argc, char** argv) {
 
         if (result.count("name")) {
             found_any = true;
-            std::cout << "Searching files by name pattern: " << result["name"].as<std::string>() << std::endl;
-            auto files = searcher.searchByName(result["name"].as<std::string>());
-            std::cout << "Found " << files.size() << " files:" << std::endl;
+            cout << "Searching files by name pattern: " << result["name"].as<string>() << endl;
+            auto files = searcher.searchByName(result["name"].as<string>());
+            cout << "Found " << files.size() << " files:" << endl;
             for (const auto& file : files) {
-                std::cout << "  " << file << std::endl;
+                cout << "  " << file << endl;
             }
-            std::cout << std::endl;
+            cout << endl;
         }
         
         if (result.count("content")) {
             found_any = true;
-            std::cout << "Searching files by content pattern: " << result["content"].as<std::string>() << std::endl;
-            auto files = searcher.searchByContent(result["content"].as<std::string>());
-            std::cout << "Found " << files.size() << " files:" << std::endl;
+            cout << "Searching files by content pattern: " << result["content"].as<string>() << endl;
+            auto files = searcher.searchByContent(result["content"].as<string>());
+            cout << "Found " << files.size() << " files:" << endl;
             for (const auto& file : files) {
-                std::cout << "  " << file << std::endl;
+                cout << "  " << file << endl;
             }
-            std::cout << std::endl;
+            cout << endl;
         }
         
         if (result.count("duplicates")) {
             found_any = true;
-            std::cout << "Searching for duplicate files..." << std::endl;
+            cout << "Searching for duplicate files..." << endl;
             auto duplicates = searcher.findDuplicates();
             
             if (duplicates.empty()) {
-                std::cout << "No duplicate files found." << std::endl;
+                cout << "No duplicate files found." << endl;
             } else {
-                std::cout << "Found " << duplicates.size() << " groups of duplicates:" << std::endl;
+                cout << "Found " << duplicates.size() << " groups of duplicates:" << endl;
                 for (const auto& [hash, files] : duplicates) {
-                    std::cout << "Hash: " << hash.substr(0, 16) << "..." << std::endl;
+                    cout << "Hash: " << hash.substr(0, 16) << "..." << endl;
                     for (const auto& file : files) {
-                        std::cout << "  " << file << std::endl;
+                        cout << "  " << file << endl;
                     }
-                    std::cout << std::endl;
+                    cout << endl;
                 }
             }
         }
 
         if (!found_any) {
-            std::cout << "No search criteria specified. Use -h for help." << std::endl;
+            cout << "No search criteria specified. Use -h for help." << endl;
         }
 
     } catch (const cxxopts::exceptions::exception& e) {
-        std::cerr << "Error parsing options: " << e.what() << std::endl;
+        cerr << "Error parsing options: " << e.what() << endl;
         return 1;
     } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        cerr << "Error: " << e.what() << endl;
         return 1;
     }
 

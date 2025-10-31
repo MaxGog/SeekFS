@@ -27,6 +27,7 @@ private:
     void transform(const unsigned char block[64]);
     void encode(const uint32_t* input, unsigned char* output, size_t length);
     static void decode(const unsigned char* input, uint32_t* output, size_t length);
+    void reset();
     
     uint32_t state[4];
     uint32_t count[2];

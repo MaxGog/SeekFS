@@ -6,16 +6,18 @@
 //
 #include "HashCalculator.h"
 #include <cstring>
+#include <array>
+#include <algorithm>
 
 namespace {
-    const uint32_t S[64] = {
+    constexpr std::array<uint32_t, 64> S = {
         7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
         5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
         4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
         6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
     };
 
-    const uint32_t K[64] = {
+    constexpr std::array<uint32_t, 64> K = {
         0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
         0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
         0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -33,9 +35,18 @@ namespace {
         0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
         0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
     };
+
+    constexpr uint32_t left_rotate(uint32_t x, uint32_t n) {
+        return (x << n) | (x >> (32 - n));
+    }
 }
 
 MD5::MD5() : finalized(false) {
+    reset();
+}
+
+void MD5::reset() {
+    finalized = false;
     count[0] = count[1] = 0;
     state[0] = 0x67452301;
     state[1] = 0xefcdab89;
@@ -44,42 +55,59 @@ MD5::MD5() : finalized(false) {
 }
 
 void MD5::update(const unsigned char* input, size_t length) {
-    size_t index = count[0] / 8 % 64;
+    if (finalized) {
+        throw std::logic_error("MD5 context already finalized");
+    }
+
+    if (!input || length == 0) {
+        return;
+    }
+
+    const size_t index = static_cast<size_t>((count[0] >> 3) & 0x3F);
     
-    if ((count[0] += (length << 3)) < (length << 3)) count[1]++;
-    count[1] += (length >> 29);
+    const uint32_t bit_count_low = static_cast<uint32_t>(length << 3);
+    const uint32_t bit_count_high = static_cast<uint32_t>(length >> 29);
     
-    size_t first_part = 64 - index;
-    size_t i;
+    if ((count[0] += bit_count_low) < bit_count_low) {
+        count[1]++;
+    }
+    count[1] += bit_count_high;
     
-    if (length >= first_part) {
-        memcpy(&buffer[index], input, first_part);
-        transform(buffer);
+    const size_t first_part = std::min(length, 64 - index);
+    
+    if (first_part > 0) {
+        std::memcpy(&buffer[index], input, first_part);
         
-        for (i = first_part; i + 63 < length; i += 64)
-            transform(&input[i]);
-        
-        index = 0;
-    } else {
-        i = 0;
+        if (index + first_part == 64) {
+            transform(buffer);
+        }
     }
     
-    memcpy(&buffer[index], &input[i], length - i);
+    size_t offset = first_part;
+    while (offset + 64 <= length) {
+        transform(&input[offset]);
+        offset += 64;
+    }
+    
+    if (offset < length) {
+        std::memcpy(buffer, &input[offset], length - offset);
+    }
 }
 
 void MD5::update(const std::string& data) {
-    update(reinterpret_cast<const unsigned char*>(data.c_str()), data.length());
+    update(reinterpret_cast<const unsigned char*>(data.data()), data.length());
 }
 
 std::string MD5::final() {
     if (!finalized) {
-        unsigned char padding[64] = {0x80};
-        
         unsigned char bits[8];
         encode(count, bits, 8);
         
-        size_t index = count[0] / 8 % 64;
-        size_t padLen = (index < 56) ? (56 - index) : (120 - index);
+        const size_t index = static_cast<size_t>((count[0] >> 3) & 0x3F);
+        const size_t padLen = (index < 56) ? (56 - index) : (120 - index);
+        
+        static const unsigned char padding[64] = {0x80};
+        
         update(padding, padLen);
         update(bits, 8);
         
@@ -89,13 +117,16 @@ std::string MD5::final() {
     unsigned char digest[16];
     encode(state, digest, 16);
     
-    std::stringstream ss;
-    ss << std::hex << std::setfill('0');
+    std::string result;
+    result.reserve(32);
+    
+    static const char hex_chars[] = "0123456789abcdef";
     for (int i = 0; i < 16; i++) {
-        ss << std::setw(2) << static_cast<unsigned int>(digest[i]);
+        result += hex_chars[digest[i] >> 4];
+        result += hex_chars[digest[i] & 0x0F];
     }
     
-    return ss.str();
+    return result;
 }
 
 void MD5::transform(const unsigned char block[64]) {
@@ -125,7 +156,7 @@ void MD5::transform(const unsigned char block[64]) {
         a = d;
         d = c;
         c = b;
-        b = b + ((f << S[i]) | (f >> (32 - S[i])));
+        b = b + left_rotate(f, S[i]);
     }
     
     state[0] += a;
@@ -136,19 +167,19 @@ void MD5::transform(const unsigned char block[64]) {
 
 void MD5::encode(const uint32_t* input, unsigned char* output, size_t length) {
     for (size_t i = 0, j = 0; j < length; i++, j += 4) {
-        output[j] = input[i] & 0xff;
-        output[j+1] = (input[i] >> 8) & 0xff;
-        output[j+2] = (input[i] >> 16) & 0xff;
-        output[j+3] = (input[i] >> 24) & 0xff;
+        output[j]   = static_cast<unsigned char>(input[i] & 0xFF);
+        output[j+1] = static_cast<unsigned char>((input[i] >> 8) & 0xFF);
+        output[j+2] = static_cast<unsigned char>((input[i] >> 16) & 0xFF);
+        output[j+3] = static_cast<unsigned char>((input[i] >> 24) & 0xFF);
     }
 }
 
 void MD5::decode(const unsigned char* input, uint32_t* output, size_t length) {
     for (size_t i = 0, j = 0; j < length; i++, j += 4) {
-        output[i] = ((uint32_t)input[j]) |
-                   (((uint32_t)input[j+1]) << 8) |
-                   (((uint32_t)input[j+2]) << 16) |
-                   (((uint32_t)input[j+3]) << 24);
+        output[i] = static_cast<uint32_t>(input[j])        |
+                   (static_cast<uint32_t>(input[j+1]) << 8)  |
+                   (static_cast<uint32_t>(input[j+2]) << 16) |
+                   (static_cast<uint32_t>(input[j+3]) << 24);
     }
 }
 
@@ -160,14 +191,21 @@ std::string MD5::calculate(const std::string& data) {
 
 std::string MD5::calculateFile(const fs::path& filePath) {
     std::ifstream file(filePath, std::ios::binary);
-    if (!file) {
+    if (!file.is_open()) {
         throw std::runtime_error("Cannot open file: " + filePath.string());
     }
     
     MD5 ctx;
-    char buffer[1024 * 16];
-    while (file.read(buffer, sizeof(buffer)) || file.gcount() > 0) {
-        ctx.update(reinterpret_cast<unsigned char*>(buffer), file.gcount());
+    const size_t BUFFER_SIZE = 64 * 1024;
+    std::vector<char> buffer(BUFFER_SIZE);
+    
+    while (file.read(buffer.data(), buffer.size()) || file.gcount() > 0) {
+        ctx.update(reinterpret_cast<const unsigned char*>(buffer.data()),
+                  static_cast<size_t>(file.gcount()));
+    }
+    
+    if (file.bad()) {
+        throw std::runtime_error("Error reading file: " + filePath.string());
     }
     
     return ctx.final();
@@ -175,12 +213,20 @@ std::string MD5::calculateFile(const fs::path& filePath) {
 
 std::string HashCalculator::calculateFileSizeHash(const fs::path& filePath) {
     try {
-        auto fileSize = fs::file_size(filePath);
-        std::stringstream ss;
-        ss << fileSize << "_" << filePath.filename().string();
-        return ss.str();
-    } catch (const std::exception&) {
-        return "0_error";
+        const auto fileSize = fs::file_size(filePath);
+        std::string result = std::to_string(fileSize);
+        result += "_";
+        
+        const std::string filename = filePath.filename().string();
+        MD5 filenameHash;
+        filenameHash.update(filename);
+        result += filenameHash.final().substr(0, 8);
+        
+        return result;
+    } catch (const std::exception& e) {
+        MD5 errorHash;
+        errorHash.update("error_" + filePath.filename().string());
+        return "error_" + errorHash.final().substr(0, 8);
     }
 }
 

@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <cstdint>
 #include <vector>
+#include <array>
 
 namespace fs = std::filesystem;
 

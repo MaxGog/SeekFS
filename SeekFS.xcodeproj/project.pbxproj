@@ -6046,9 +6046,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B396C5082EB297F100E65952 /* scr */ = {
+		B396C5082EB297F100E65952 /* src */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = scr;
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -6072,7 +6072,7 @@
 				B3EA00492EB4BF4E00F58688 /* scripts */,
 				B3EA00452EB4BD3B00F58688 /* benchmarks */,
 				B3EA00422EB4BD0100F58688 /* tests */,
-				B396C5082EB297F100E65952 /* scr */,
+				B396C5082EB297F100E65952 /* src */,
 				B396C51A2EB2994800E65952 /* Frameworks */,
 				B396C5072EB297F100E65952 /* Products */,
 			);
@@ -14772,7 +14772,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				B396C5082EB297F100E65952 /* scr */,
+				B396C5082EB297F100E65952 /* src */,
 			);
 			name = SeekFS;
 			packageProductDependencies = (

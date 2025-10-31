@@ -18,7 +18,7 @@ namespace fs = std::filesystem;
 using namespace std;
 
 int main(int argc, char** argv) {
-    cxxopts::Options options("FileSearchUtility", "🎯 Advanced file search utility - Modern C++17/20");
+    cxxopts::Options options("SeekFS", "🎯 Advanced file search utility - Modern C++17/20");
     
     options.add_options()
         ("p,path", "Search path", cxxopts::value<std::string>()->default_value("."))

@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B37978EC2EB4C8650037A5A0 /* INSTALL.md in Sources */ = {isa = PBXBuildFile; fileRef = B37978EB2EB4C8610037A5A0 /* INSTALL.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		B396C5042EB297F100E65952 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -19,6 +23,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B37978E92EB4C7E00037A5A0 /* seekfs.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = seekfs.rb; sourceTree = "<group>"; };
+		B37978EA2EB4C82F0037A5A0 /* install.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = install.sh; sourceTree = "<group>"; };
+		B37978EB2EB4C8610037A5A0 /* INSTALL.md */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INSTALL.md; sourceTree = "<group>"; };
 		B396C5062EB297F100E65952 /* SeekFS */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SeekFS; sourceTree = BUILT_PRODUCTS_DIR; };
 		B396C51B2EB2994900E65952 /* build.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = build.yml; sourceTree = "<group>"; };
 		B396C51C2EB2994900E65952 /* cifuzz.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = cifuzz.yml; sourceTree = "<group>"; };
@@ -6060,6 +6067,7 @@
 		B396C4FD2EB297F100E65952 = {
 			isa = PBXGroup;
 			children = (
+				B37978EB2EB4C8610037A5A0 /* INSTALL.md */,
 				B3EA004C2EB4BF9300F58688 /* conanfile.txt */,
 				B3EA00492EB4BF4E00F58688 /* scripts */,
 				B3EA00452EB4BD3B00F58688 /* benchmarks */,
@@ -14740,6 +14748,8 @@
 		B3EA00492EB4BF4E00F58688 /* scripts */ = {
 			isa = PBXGroup;
 			children = (
+				B37978EA2EB4C82F0037A5A0 /* install.sh */,
+				B37978E92EB4C7E00037A5A0 /* seekfs.rb */,
 				B3EA004B2EB4BF6E00F58688 /* run_examples.sh */,
 				B3EA004A2EB4BF5700F58688 /* install_dependencies.sh */,
 			);
@@ -14810,6 +14820,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B37978EC2EB4C8650037A5A0 /* INSTALL.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

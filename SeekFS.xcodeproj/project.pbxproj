@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B3EA00482EB4BD6100F58688 /* CMakeLists.txt in Sources */ = {isa = PBXBuildFile; fileRef = B3EA00472EB4BD5D00F58688 /* CMakeLists.txt */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		B396C5042EB297F100E65952 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -6030,12 +6034,16 @@
 		B396DDD92EB29EC100E65952 /* README-QUIC.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "README-QUIC.md"; sourceTree = "<group>"; };
 		B396DDDA2EB29EC100E65952 /* SUPPORT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SUPPORT.md; sourceTree = "<group>"; };
 		B396DDDB2EB29EC100E65952 /* VERSION.dat */ = {isa = PBXFileReference; lastKnownFileType = text; path = VERSION.dat; sourceTree = "<group>"; };
+		B3EA00432EB4BD0900F58688 /* unit_tests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = unit_tests.cpp; sourceTree = "<group>"; };
+		B3EA00442EB4BD2900F58688 /* integration_tests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = integration_tests.cpp; sourceTree = "<group>"; };
+		B3EA00462EB4BD4600F58688 /* performance_benchmark.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = performance_benchmark.cpp; sourceTree = "<group>"; };
+		B3EA00472EB4BD5D00F58688 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMakeLists.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B396C5082EB297F100E65952 /* SeekFS */ = {
+		B396C5082EB297F100E65952 /* scr */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SeekFS;
+			path = scr;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -6054,7 +6062,10 @@
 		B396C4FD2EB297F100E65952 = {
 			isa = PBXGroup;
 			children = (
-				B396C5082EB297F100E65952 /* SeekFS */,
+				B3EA00472EB4BD5D00F58688 /* CMakeLists.txt */,
+				B3EA00452EB4BD3B00F58688 /* benchmarks */,
+				B3EA00422EB4BD0100F58688 /* tests */,
+				B396C5082EB297F100E65952 /* scr */,
 				B396C51A2EB2994800E65952 /* Frameworks */,
 				B396C5072EB297F100E65952 /* Products */,
 			);
@@ -14710,6 +14721,23 @@
 			path = vendor/openssl;
 			sourceTree = "<group>";
 		};
+		B3EA00422EB4BD0100F58688 /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				B3EA00442EB4BD2900F58688 /* integration_tests.cpp */,
+				B3EA00432EB4BD0900F58688 /* unit_tests.cpp */,
+			);
+			path = tests;
+			sourceTree = "<group>";
+		};
+		B3EA00452EB4BD3B00F58688 /* benchmarks */ = {
+			isa = PBXGroup;
+			children = (
+				B3EA00462EB4BD4600F58688 /* performance_benchmark.cpp */,
+			);
+			path = benchmarks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -14726,7 +14754,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				B396C5082EB297F100E65952 /* SeekFS */,
+				B396C5082EB297F100E65952 /* scr */,
 			);
 			name = SeekFS;
 			packageProductDependencies = (
@@ -14746,6 +14774,7 @@
 				TargetAttributes = {
 					B396C5052EB297F100E65952 = {
 						CreatedOnToolsVersion = 26.0.1;
+						LastSwiftMigration = 2600;
 					};
 				};
 			};
@@ -14773,6 +14802,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3EA00482EB4BD6100F58688 /* CMakeLists.txt in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14901,18 +14931,23 @@
 		B396C50E2EB297F100E65952 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
 		B396C50F2EB297F100E65952 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};

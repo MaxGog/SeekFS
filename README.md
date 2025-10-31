@@ -4,7 +4,6 @@
 - [Исходный код (GitHub)](https://github.com/maxgog/)
 - [Поддержать разработчика](https://hipolink.net/maxupshur)
 
-
 ## Оглавление
 1. [Обзор](#обзор)
 2. [Возможности](#возможности)
@@ -54,7 +53,7 @@
 ### Сборка
 ```bash
 # Клонирование репозитория
-git clone <repository-url>
+git clone <https://github.com/maxgog/SeekFS/>
 cd SeekFS
 
 # Создание директории сборки
@@ -207,6 +206,7 @@ for (const auto& batch : batches) {
 ## 👨‍💻 Автор
 
 **MaxGog**
+
 📧 Почта: max.gog2005@outlook.com  
 💖 Поддержать: [hipolink.net/maxupshur](https://hipolink.net/maxupshur)
 

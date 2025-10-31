@@ -6,7 +6,6 @@
 //
 #include "HashCalculator.h"
 #include <cstring>
-#include <array>
 #include <algorithm>
 
 namespace {
@@ -197,10 +196,10 @@ std::string MD5::calculateFile(const fs::path& filePath) {
     
     MD5 ctx;
     const size_t BUFFER_SIZE = 64 * 1024;
-    std::vector<char> buffer(BUFFER_SIZE);
+    std::vector<char> fileBuffer(BUFFER_SIZE);
     
-    while (file.read(buffer.data(), buffer.size()) || file.gcount() > 0) {
-        ctx.update(reinterpret_cast<const unsigned char*>(buffer.data()),
+    while (file.read(fileBuffer.data(), fileBuffer.size()) || file.gcount() > 0) {
+        ctx.update(reinterpret_cast<const unsigned char*>(fileBuffer.data()),
                   static_cast<size_t>(file.gcount()));
     }
     

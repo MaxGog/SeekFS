@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: seekfs-linux
+            package_type: deb
+          - os: macos-latest
+            artifact_name: seekfs-macos
+            package_type: tar.gz
+          - os: windows-latest
+            artifact_name: seekfs-windows
+            package_type: zip
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+        elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+          brew update
+          brew install cmake
+        elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+          choco install cmake -y
+        fi
+
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Create Package
+      run: |
+        cd build
+        cpack -G ${{ matrix.package_type }}
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: build/*.${{ matrix.package_type }}
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
+    - name: Display structure of downloaded files
+      run: ls -R artifacts
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          artifacts/seekfs-linux/*.deb
+          artifacts/seekfs-macos/*.tar.gz
+          artifacts/seekfs-windows/*.zip
+        generate_release_notes: true

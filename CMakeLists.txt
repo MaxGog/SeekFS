@@ -15,11 +15,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cxxopts)
 
 add_executable(SeekFS
-    main.cpp
-    FileSearcher.cpp
-    HashCalculator.cpp
-    GraphicsUtils.cpp
-    ProgressVisualizer.cpp
+    scr/main.cpp
+    scr/FileSearcher.cpp
+    scr/HashCalculator.cpp
+    scr/GraphicsUtils.cpp
+    scr/ProgressVisualizer.cpp
 )
 
 target_link_libraries(SeekFS PRIVATE cxxopts::cxxopts)

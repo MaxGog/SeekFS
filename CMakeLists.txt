@@ -18,7 +18,6 @@ add_executable(SeekFS
     scr/main.cpp
     scr/FileSearcher.cpp
     scr/HashCalculator.cpp
-    scr/ProgressVisualizer.cpp
 )
 
 target_link_libraries(SeekFS PRIVATE cxxopts::cxxopts)

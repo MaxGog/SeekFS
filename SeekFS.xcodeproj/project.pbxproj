@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		B3EA00482EB4BD6100F58688 /* CMakeLists.txt in Sources */ = {isa = PBXBuildFile; fileRef = B3EA00472EB4BD5D00F58688 /* CMakeLists.txt */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		B396C5042EB297F100E65952 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -6037,7 +6033,9 @@
 		B3EA00432EB4BD0900F58688 /* unit_tests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = unit_tests.cpp; sourceTree = "<group>"; };
 		B3EA00442EB4BD2900F58688 /* integration_tests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = integration_tests.cpp; sourceTree = "<group>"; };
 		B3EA00462EB4BD4600F58688 /* performance_benchmark.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = performance_benchmark.cpp; sourceTree = "<group>"; };
-		B3EA00472EB4BD5D00F58688 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMakeLists.txt; sourceTree = "<group>"; };
+		B3EA004A2EB4BF5700F58688 /* install_dependencies.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = install_dependencies.sh; sourceTree = "<group>"; };
+		B3EA004B2EB4BF6E00F58688 /* run_examples.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = run_examples.sh; sourceTree = "<group>"; };
+		B3EA004C2EB4BF9300F58688 /* conanfile.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = conanfile.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -6062,7 +6060,8 @@
 		B396C4FD2EB297F100E65952 = {
 			isa = PBXGroup;
 			children = (
-				B3EA00472EB4BD5D00F58688 /* CMakeLists.txt */,
+				B3EA004C2EB4BF9300F58688 /* conanfile.txt */,
+				B3EA00492EB4BF4E00F58688 /* scripts */,
 				B3EA00452EB4BD3B00F58688 /* benchmarks */,
 				B3EA00422EB4BD0100F58688 /* tests */,
 				B396C5082EB297F100E65952 /* scr */,
@@ -14738,6 +14737,15 @@
 			path = benchmarks;
 			sourceTree = "<group>";
 		};
+		B3EA00492EB4BF4E00F58688 /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				B3EA004B2EB4BF6E00F58688 /* run_examples.sh */,
+				B3EA004A2EB4BF5700F58688 /* install_dependencies.sh */,
+			);
+			path = scripts;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -14802,7 +14810,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3EA00482EB4BD6100F58688 /* CMakeLists.txt in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

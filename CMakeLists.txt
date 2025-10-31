@@ -18,7 +18,6 @@ add_executable(SeekFS
     scr/main.cpp
     scr/FileSearcher.cpp
     scr/HashCalculator.cpp
-    scr/GraphicsUtils.cpp
     scr/ProgressVisualizer.cpp
 )
 

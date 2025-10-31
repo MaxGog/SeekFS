@@ -22,7 +22,8 @@ SeekFS -c "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
 SeekFS -c "TODO|FIXME|XXX" --type cpp,h,py
 
 # Поиск IP адресов
-SeekFS -c "\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b"```
+SeekFS -c "\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b"
+```
 
 ## Оптимизация производительности
 
@@ -41,4 +42,5 @@ bash
 SeekFS -c "pattern" --max-size 10  # Только файлы до 10MB
 
 # Поиск в маленьких файлах
-SeekFS -d --max-size 1 --type txt,md```
+SeekFS -d --max-size 1 --type txt,md
+```
